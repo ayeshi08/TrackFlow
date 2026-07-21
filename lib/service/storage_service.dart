@@ -1,75 +1,10 @@
-
-// import 'dart:convert';
-//
-// import 'package:shared_preferences/shared_preferences.dart';
-//
-// import '../model/trip_model.dart';
-//
-// class StorageService {
-//   final String apiBaseUrl = "http://192.168.1.5:3000/trips";
-//
-//   Future<List<Trip>> getTrips() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final localData = prefs.getString('trips');
-//
-//     if (localData == null) return [];
-//
-//     final List jsonData = jsonDecode(localData);
-//     return jsonData.map((e) => Trip.fromJson(e)).toList();
-//   }
-//
-//   Future<void> saveTrips(List<Trip> trips) async {
-//     final prefs = await SharedPreferences.getInstance();
-//
-//     await prefs.setString(
-//       'trips',
-//       jsonEncode(trips.map((t) => t.toJson()).toList()),
-//     );
-//   }
-//
-//   Future<void> addTrip(Trip trip) async {
-//     final trips = await getTrips();
-//
-//     final index = trips.indexWhere((t) => t.id == trip.id);
-//
-//     if (index != -1) {
-//       trips[index] = trip;
-//     } else {
-//       trips.add(trip);
-//     }
-//
-//     await saveTrips(trips);
-//   }
-//   Future<void> clearTrips() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     await prefs.remove('trips');
-//   }
-//
-//   Future<void> updateTrip(Trip trip) async {
-//     final trips = await getTrips();
-//
-//     final index = trips.indexWhere((t) => t.id == trip.id);
-//
-//     if (index != -1) {
-//       trips[index] = trip;
-//       await saveTrips(trips);
-//     }
-//   }
-//
-//   Future<void> deleteTrip(String id) async {
-//     final trips = await getTrips();
-//     trips.removeWhere((t) => t.id == id);
-//     await saveTrips(trips);
-//   }
-// }
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/trip_model.dart';
 
 class StorageService {
   static const _tripsKey = 'trips';
- // final String apiBaseUrl = "http://192.168.1.5:3000/trips";
-  // ==============================
+  static const _inProgressTripKey = 'in_progress_trip';
   // Get all locally stored trips
   Future<List<Trip>> getTrips() async {
     final prefs = await SharedPreferences.getInstance();
@@ -116,6 +51,28 @@ class StorageService {
       trips[index] = trip;
       await saveTrips(trips);
     }
+  }
+
+  // Save current in-progress trip (checkpoint)
+  Future<void> saveInProgressTrip(Trip trip) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_inProgressTripKey, jsonEncode(trip.toJson()));
+  }
+
+  // ==============================
+  // Get the in-progress trip, if any exists (after a crash)
+  Future<Trip?> getInProgressTrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getString(_inProgressTripKey);
+    if (data == null) return null;
+    return Trip.fromJson(jsonDecode(data));
+  }
+
+  // ==============================
+  //Clear the checkpoint (call this once a trip finishes normally)
+  Future<void> clearInProgressTrip() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_inProgressTripKey);
   }
 
   // ==============================

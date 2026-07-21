@@ -6,11 +6,10 @@ plugins {
 }
 
 android {
-    namespace = "com.example.trackflow"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.nexora.trackflow"
+    compileSdk = 36
     ndkVersion = "27.0.12077973"
 
-    // ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -23,11 +22,9 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.trackflow"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        applicationId = "com.nexora.trackflow"
+        minSdk = 26
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -43,4 +40,19 @@ android {
 
 flutter {
     source = "../.."
+}
+// Add this at the very bottom of your file
+dependencies {
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // your existing dependencies stay
+    implementation("androidx.browser:browser") {
+        version { strictly("1.8.0") }
+    }
+    implementation("androidx.core:core") {
+        version { strictly("1.13.1") }
+    }
+    implementation("androidx.core:core-ktx") {
+        version { strictly("1.13.1") }
+    }
 }

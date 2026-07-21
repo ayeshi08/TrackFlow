@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../model/user_model.dart';
 import '../service/auth_service.dart';
 
@@ -37,19 +38,20 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
 
     final result = await _authService.register(
-      name: name, email: email, phone: phone, password: password,
+      name: name,
+      email: email,
+      //phone: phone,
+      password: password,
     );
 
     isLoading = false;
-    if (!result['success']) errorMessage = result['message'];
+    if (!(result['success'] as bool))
+      errorMessage = result['message'] as String?;
     notifyListeners();
     return result;
   }
 
-  Future<bool> verifyOtp({
-    required String userId,
-    required String otp,
-  }) async {
+  Future<bool> verifyOtp({required String userId, required String otp}) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -64,7 +66,7 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return true;
     } else {
-      errorMessage = result['message'];
+      errorMessage = result['message'] as String?;
       notifyListeners();
       return false;
     }
@@ -83,7 +85,8 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
 
     final result = await _authService.login(
-      emailOrPhone: emailOrPhone, password: password,
+      emailOrPhone: emailOrPhone,
+      password: password,
     );
 
     isLoading = false;
@@ -93,12 +96,13 @@ class AuthViewModel extends ChangeNotifier {
       isGuest = false;
       notifyListeners();
     } else {
-      errorMessage = result['message'];
+      errorMessage = result['message'] as String?;
       notifyListeners();
     }
 
     return result;
   }
+
   Future<Map<String, dynamic>> forgotPassword({
     required String emailOrPhone,
     bool usePhone = false,
@@ -116,6 +120,7 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
     return result;
   }
+
   Future<bool> resetPassword({
     required String userId,
     required String otp,
@@ -126,7 +131,9 @@ class AuthViewModel extends ChangeNotifier {
     notifyListeners();
 
     final result = await _authService.resetPassword(
-      userId: userId, otp: otp, newPassword: newPassword,
+      userId: userId,
+      otp: otp,
+      newPassword: newPassword,
     );
 
     isLoading = false;
@@ -135,7 +142,7 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return true;
     } else {
-      errorMessage = result['message'];
+      errorMessage = result['message'] as String?;
       notifyListeners();
       return false;
     }
@@ -148,13 +155,12 @@ class AuthViewModel extends ChangeNotifier {
     final result = await _authService.updateProfile(name: name);
 
     isLoading = false;
-
     if (result['success'] == true) {
       currentUser = await _authService.getUser();
       notifyListeners();
       return true;
     } else {
-      errorMessage = result['message'];
+      errorMessage = result['message'] as String?;
       notifyListeners();
       return false;
     }
@@ -179,7 +185,7 @@ class AuthViewModel extends ChangeNotifier {
       notifyListeners();
       return true;
     } else {
-      errorMessage = result['message'];
+      errorMessage = result['message'] as String?;
       notifyListeners();
       return false;
     }
@@ -197,6 +203,24 @@ class AuthViewModel extends ChangeNotifier {
     currentUser = null;
     isGuest = false;
     notifyListeners();
+  }
+
+  Future<Map<String, dynamic>> deleteAccount() async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    final result = await _authService.deleteAccount();
+
+    isLoading = false;
+    if (result['success'] == true) {
+      currentUser = null;
+      isGuest = false;
+    } else {
+      errorMessage = result['message'] as String?;
+    }
+    notifyListeners();
+    return result;
   }
 
   void clearError() {
