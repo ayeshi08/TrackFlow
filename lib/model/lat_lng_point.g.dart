@@ -1,5 +1,3 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'lat_lng_point.dart';
 
 // **************************************************************************
@@ -16,10 +14,7 @@ class LatLngPointAdapter extends TypeAdapter<LatLngPoint> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return LatLngPoint(
-      lat: fields[0] as double,
-      lng: fields[1] as double,
-    );
+    return LatLngPoint(lat: fields[0] as double, lng: fields[1] as double);
   }
 
   @override

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 class ConnectivityViewModel extends ChangeNotifier {
   bool isOnline = true;
 
-  // ADD THIS
   bool justReconnected = false;
 
   StreamSubscription? _subscription;
